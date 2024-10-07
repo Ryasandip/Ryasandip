@@ -1,0 +1,19 @@
+public class main {
+  private String fname = "wkwk";
+  private String lname = "mantul";
+  private String email = "wkwkmantul1@gmail.com";
+  private String address = "gandoang";
+  private int age =35;
+  private String country = "indonesia";
+  private String majoring = "multimedia";
+
+  public static void main(String[] args) {
+    main myObj = new main();
+    System.out.println("Name: " + myObj.fname + " " + myObj.lname);
+    System.out.println("Email: " + myObj.email);
+    System.out.println("Age: " + myObj.age);
+    System.out.println("Address: " + myObj.address);
+    System.out.println("Country: " + myObj.country);
+    System.out.println("majoring: " + myObj.majoring);
+  }
+}
