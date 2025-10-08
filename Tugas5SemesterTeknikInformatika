@@ -1,0 +1,83 @@
+import javax.swing.*;
+import java.awt.*;
+
+public class ArcPatternPanel extends JPanel {
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        Graphics2D g2 = (Graphics2D) g;
+
+        // Ukuran dan posisi
+        int radius = 50;
+        int padding = 10;
+        int startX = 20;
+        int startY = 20;
+
+        // Data: {fill(true/false), color, startAngle, arcAngle}
+        Object[][][] arcData = {
+            {
+                {true, new Color(25, 25, 112), 90, 90},
+                {true, Color.RED, 0, 180},
+                {true, Color.BLUE, 0, 180},
+                {true, new Color(165, 42, 42), 0, 270},
+                {true, new Color(144, 238, 144), 45, 270}
+            },
+            {
+                {false, Color.GREEN, 135, 90},
+                {false, new Color(0, 255, 255), 0, 180},
+                {false, Color.BLUE, 0, 180},
+                {false, Color.GREEN.darker(), 0, 270},
+                {false, Color.CYAN.darker(), 0, 270}
+            },
+            {
+                {true, Color.ORANGE, 90, 90},
+                {true, Color.GREEN, 0, 180},
+                {true, new Color(128, 0, 128), 0, 180},
+                {true, new Color(48, 25, 52), 0, 270},
+                {true, new Color(128, 0, 128), 45, 270}
+            },
+            {
+                {false, new Color(148, 0, 211), 90, 90},
+                {false, Color.BLUE, 0, 180},
+                {false, Color.GREEN, 0, 180},
+                {false, Color.BLUE.brighter(), 0, 180},
+                {false, Color.YELLOW.darker(), 0, 270}
+            },
+            {
+                {true, new Color(0, 206, 209), 90, 90},
+                {true, Color.ORANGE, 0, 180},
+                {true, Color.RED.darker(), 0, 180},
+                {true, new Color(186, 85, 211), 0, 270},
+                {true, Color.GREEN, 45, 270}
+            }
+        };
+
+        for (int row = 0; row < arcData.length; row++) {
+            for (int col = 0; col < arcData[row].length; col++) {
+                int x = startX + col * (radius + padding);
+                int y = startY + row * (radius + padding);
+
+                Object[] arc = arcData[row][col];
+                boolean fill = (Boolean) arc[0];
+                Color color = (Color) arc[1];
+                int startAngle = (Integer) arc[2];
+                int arcAngle = (Integer) arc[3];
+
+                g2.setColor(color);
+                if (fill) {
+                    g2.fillArc(x, y, radius, radius, startAngle, arcAngle);
+                } else {
+                    g2.drawArc(x, y, radius, radius, startAngle, arcAngle);
+                }
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("Arc Pattern");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(600, 400);
+        frame.add(new ArcPatternPanel());
+        frame.setVisible(true);
+    }
+}
