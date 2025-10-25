@@ -1,0 +1,175 @@
+import javax.swing.*;
+import java.awt.*;
+
+/**
+ * Program Java untuk menggambar bentuk berdasarkan NPM Genap atau Ganjil.
+ * * Program ini membuat 3 bentuk jam pasir (6 segitiga) dan 2 anak panah.
+ * - Loop 'for' digunakan untuk membuat 3 jam pasir.
+ * - Jam pasir kiri dan kanan diisi (fillPolygon).
+ * - Jam pasir tengah hanya garis (drawPolygon).
+ * - Arah panah dikontrol oleh boolean 'isNpmGenap'.
+ * - Menambahkan judul "NPM Ganjil" atau "NPM Genap" di atas gambar.
+ */
+public class NpmShapeDrawerWithTitle extends JFrame {
+
+    /**
+     * Konstruktor utama untuk mengatur jendela (JFrame).
+     * @param title Judul jendela (Genap atau Ganjil).
+     * @param isGenap Boolean untuk menentukan arah panah.
+     */
+    public NpmShapeDrawerWithTitle(String title, boolean isGenap) {
+        setTitle(title); // Judul jendela
+        setSize(800, 500); // Mengatur ukuran jendela, lebih tinggi untuk judul
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null); // Menempatkan jendela di tengah layar
+        
+        // Menambahkan DrawingPanel kustom ke frame
+        add(new DrawingPanel(title, isGenap));
+    }
+
+    /**
+     * Panel kustom (JPanel) tempat semua gambar dilakukan.
+     */
+    class DrawingPanel extends JPanel {
+        
+        private boolean isNpmGenap;
+        private String displayTitle;
+
+        public DrawingPanel(String title, boolean isGenap) {
+            this.isNpmGenap = isGenap;
+            this.displayTitle = title; // Judul yang akan ditampilkan di panel
+            setBackground(Color.WHITE); // Latar belakang putih
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            Graphics2D g2d = (Graphics2D) g;
+
+            // Mengaktifkan anti-aliasing untuk gambar yang lebih halus
+            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, 
+                                 RenderingHints.VALUE_ANTIALIAS_ON);
+            g2d.setStroke(new BasicStroke(2)); // Mengatur ketebalan garis
+
+            // --- Gambar Judul di Atas ---
+            g2d.setColor(Color.BLACK);
+            g2d.setFont(new Font("Arial", Font.BOLD, 48)); // Ukuran font besar
+            FontMetrics fm = g2d.getFontMetrics();
+            int titleWidth = fm.stringWidth(displayTitle);
+            int titleX = (getWidth() - titleWidth) / 2; // Pusatkan judul
+            int titleY = fm.getAscent() + 30; // Sedikit jarak dari atas jendela
+
+            g2d.drawString(displayTitle, titleX, titleY);
+
+            // --- Definisi Variabel untuk Bentuk ---
+            // Sesuaikan y_center agar gambar tidak tumpang tindih dengan judul
+            int y_center = getHeight() / 2 + 50; 
+            int hg_height = 200; // Tinggi total jam pasir
+            int hg_width = 100;  // Lebar jam pasir
+            int h_offset = 250;  // Jarak horizontal antar jam pasir
+            
+            int y_top = y_center - hg_height / 2;
+            int y_bottom = y_center + hg_height / 2;
+            
+            // Koordinat X dasar untuk jam pasir pertama (kiri)
+            int x_start = 75; // Padding dari tepi kiri
+            int x_left = x_start;
+            int x_right = x_start + hg_width;
+            int x_mid = x_start + hg_width / 2;
+
+            // === LOOP FOR untuk 3 Jam Pasir (6 Segitiga) ===
+            for (int i = 0; i < 3; i++) {
+                int current_offset = i * h_offset;
+
+                // 1. Definisikan segitiga atas (menunjuk ke bawah)
+                int[] x_top_coords = {x_left + current_offset, x_right + current_offset, x_mid + current_offset};
+                int[] y_top_coords = {y_top, y_top, y_center};
+                Polygon polyTop = new Polygon(x_top_coords, y_top_coords, 3);
+
+                // 2. Definisikan segitiga bawah (menunjuk ke atas)
+                int[] x_bottom_coords = {x_left + current_offset, x_right + current_offset, x_mid + current_offset};
+                int[] y_bottom_coords = {y_bottom, y_bottom, y_center};
+                Polygon polyBottom = new Polygon(x_bottom_coords, y_bottom_coords, 3);
+
+                // 3. Logika menggambar
+                if (i == 1) {
+                    // Jam pasir tengah (hanya garis)
+                    g2d.setColor(Color.BLACK);
+                    g2d.drawPolygon(polyTop);    // Menggunakan drawPolygon
+                    g2d.drawPolygon(polyBottom); // Menggunakan drawPolygon
+                } else {
+                    // Jam pasir kiri (i=0) dan kanan (i=2) (diisi)
+                    g2d.setColor(Color.BLACK);
+                    g2d.fillPolygon(polyTop);    // Menggunakan fillPolygon
+                    g2d.fillPolygon(polyBottom); // Menggunakan fillPolygon
+                }
+            }
+            
+            // --- Logika untuk Anak Panah ---
+            int arrow_len = 100;
+            int y_start, y_end;
+
+            if (isNpmGenap) {
+                // NPM GENAP: Panah ke ATAS
+                y_start = y_center + (arrow_len / 2); // Mulai dari bawah
+                y_end = y_center - (arrow_len / 2);   // Selesai di atas
+            } else {
+                // NPM GANJIL: Panah ke BAWAH
+                y_start = y_center - (arrow_len / 2); // Mulai dari atas
+                y_end = y_center + (arrow_len / 2);   // Selesai di bawah
+            }
+
+            // Hitung posisi X untuk kedua panah
+            // Panah 1: Di antara jam pasir 0 dan 1
+            int arrow1_x = x_mid + (h_offset / 2);
+            // Panah 2: Di antara jam pasir 1 dan 2
+            int arrow2_x = x_mid + (int)(h_offset * 1.5);
+
+            int[] arrow_x_positions = {arrow1_x, arrow2_x};
+
+            // === LOOP FOR untuk 2 Anak Panah ===
+            for (int x_pos : arrow_x_positions) {
+                drawVerticalArrow(g2d, x_pos, y_start, x_pos, y_end);
+            }
+        }
+
+        /**
+         * Fungsi bantuan untuk menggambar garis vertikal dengan mata panah.
+         */
+        private void drawVerticalArrow(Graphics g, int x1, int y1, int x2, int y2) {
+            g.drawLine(x1, y1, x2, y2); // Gambar batang panah
+            
+            int ARR_SIZE = 8; // Ukuran mata panah
+            
+            if (y2 < y1) {
+                // Panah menunjuk ke ATAS
+                g.drawLine(x2, y2, x2 - ARR_SIZE, y2 + ARR_SIZE);
+                g.drawLine(x2, y2, x2 + ARR_SIZE, y2 + ARR_SIZE);
+            } else {
+                // Panah menunjuk ke BAWAH
+                g.drawLine(x2, y2, x2 - ARR_SIZE, y2 - ARR_SIZE);
+                g.drawLine(x2, y2, x2 + ARR_SIZE, y2 - ARR_SIZE);
+            }
+        }
+    }
+
+    /**
+     * Main method untuk menjalankan program.
+     */
+    public static void main(String[] args) {
+        
+        // --- UBAH PENGATURAN DI SINI ---
+        // true = NPM Genap (Panah ke Atas)
+        // false = NPM Ganjil (Panah ke Bawah)
+        boolean apakahNpmGenap = true; 
+        // ---------------------------------
+
+        String title = apakahNpmGenap ? "NPM Genap" : "NPM Ganjil";
+
+        // Menjalankan GUI di Event Dispatch Thread (praktik terbaik Swing)
+        SwingUtilities.invokeLater(() -> {
+            NpmShapeDrawerWithTitle frame = new NpmShapeDrawerWithTitle(title, apakahNpmGenap);
+            frame.setVisible(true);
+        });
+    }
+}
