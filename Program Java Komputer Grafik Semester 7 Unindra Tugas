@@ -1,0 +1,52 @@
+import javax.swing.*;
+import java.awt.*;
+import java.util.Random;
+
+public class ColorGrid extends JPanel {
+    private static final int ROWS = 10;   // jumlah baris
+    private static final int COLS = 15;   // jumlah kolom
+    private static final int SIZE = 40;   // ukuran tiap sel
+    private static final int PADDING = 5; // jarak antar sel
+    private static final Random rand = new Random();
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        Graphics2D g2 = (Graphics2D) g;
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+        for (int row = 0; row < ROWS; row++) {
+            for (int col = 0; col < COLS; col++) {
+                int x = col * (SIZE + PADDING);
+                int y = row * (SIZE + PADDING);
+
+                // Warna acak atau putih
+                Color color = rand.nextBoolean() ? Color.WHITE
+                        : new Color(rand.nextInt(256), rand.nextInt(256), rand.nextInt(256));
+
+                g2.setColor(color);
+
+                // Pilih bentuk secara acak: lingkaran atau persegi membulat
+                if (rand.nextBoolean()) {
+                    g2.fillOval(x, y, SIZE, SIZE);
+                } else {
+                    g2.fillRoundRect(x, y, SIZE, SIZE, 10, 10);
+                }
+
+                // Gambar garis pinggir
+                g2.setColor(Color.BLACK);
+                g2.drawOval(x, y, SIZE, SIZE);
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("Grid Warna");
+        ColorGrid panel = new ColorGrid();
+        panel.setPreferredSize(new Dimension(COLS * 45, ROWS * 45));
+        frame.add(panel);
+        frame.pack();
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setVisible(true);
+    }
+}
