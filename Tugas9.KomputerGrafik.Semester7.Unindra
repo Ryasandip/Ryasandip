@@ -1,0 +1,58 @@
+import java.awt.Color;
+import java.awt.Graphics;
+import javax.swing.JPanel;
+import javax.swing.JFrame;
+
+public class GambarMahasiswa extends JPanel {
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+
+        // Warna background
+        setBackground(Color.WHITE);
+
+        // Koordinat awal kotak
+        int xKotak = 50;
+        int yKotak = 50;
+        int lebarKotak = 60;
+        int tinggiKotak = 30;
+        int jarakKotak = 35;
+        
+
+        // Titik pusat lingkaran
+        int xLingkaran = 250;
+        int yLingkaran = 140;
+        int radius = 30;
+
+        // Menggambar 6 kotak dan garis ke lingkaran
+        for (int i = 0; i < 6; i++) {
+            int y = yKotak + i * (tinggiKotak + jarakKotak);
+            // Gambar kotak
+            g.drawRect(xKotak, y, lebarKotak, tinggiKotak);
+
+            // Titik tengah kanan kotak
+            int xTengahKotak = xKotak + lebarKotak;
+            int yTengahKotak = y + tinggiKotak / 2;
+
+            // Gambar garis dari kotak ke pusat lingkaran
+            g.drawLine(xTengahKotak, yTengahKotak, xLingkaran, yLingkaran);
+        }
+
+        // Gambar lingkaran
+        g.drawOval(xLingkaran - radius, yLingkaran - radius, radius * 2, radius * 2);
+
+        // Tambah teks di kanan atas
+        g.drawString("NPM : 202243502742", xLingkaran + 60, yLingkaran - 30);
+        g.drawString("Nama : RyasAndiPramudipta", xLingkaran + 60, yLingkaran);
+    }
+
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("Gambar Mahasiswa");
+        GambarMahasiswa panel = new GambarMahasiswa();
+        frame.add(panel);
+        frame.setSize(500, 400);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setVisible(true);
+    }
+}
