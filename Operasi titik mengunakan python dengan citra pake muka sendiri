@@ -1,0 +1,36 @@
+import cv2
+import numpy as np
+
+# 1. Membaca gambar
+img = cv2.imread('foto_kamu.jpg')
+
+# --- OPERASI TITIK ---
+
+# A. Grayscale (Mengubah ke Skala Abu-abu)
+# Rumus: Y = 0.299*R + 0.587*G + 0.114*B
+gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+# B. Citra Negatif (Inversi)
+# Rumus: s = (L - 1) - r
+img_negative = 255 - img
+
+# C. Thresholding (Binerisasi)
+# Mengubah gambar jadi hitam putih total berdasarkan ambang batas
+_, img_thresh = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY)
+
+# D. Koreksi Gamma (Power-Law Transformation)
+# Rumus: s = c * r^gamma
+gamma = 2.2
+invGamma = 1.0 / gamma
+table = np.array([((i / 255.0) ** invGamma) * 255 
+                  for i in np.arange(0, 256)]).astype("uint8")
+img_gamma = cv2.LUT(img, table)
+
+# --- MENAMPILKAN HASIL ---
+cv2.imshow('Original', img)
+cv2.imshow('Negatif', img_negative)
+cv2.imshow('Binary/Threshold', img_thresh)
+cv2.imshow('Gamma Correction', img_gamma)
+
+cv2.waitKey(0)
+cv2.destroyAllWindows()
